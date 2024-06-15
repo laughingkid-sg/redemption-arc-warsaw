@@ -299,20 +299,6 @@ const EventPurchase = ({ params }) => {
                   w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
                   onClick={handlePurchase}
                 >
-                  {/* <div
-                    className={`ml-3 flex items-center ${
-                      isCancelled ? "opacity-50" : ""
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="payment"
-                      id="blik"
-                      className="mr-2"
-                    />
-                    <img src="/images/blik.svg" className="w-10 h-10 mr-2" />
-                    <p className="font-semibold text-black text-sm">blik</p>
-                  </div> */}
                    <div
                     className={`ml-3 flex items-center ${
                       isCancelled ? "opacity-50" : ""
