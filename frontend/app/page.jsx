@@ -9,11 +9,11 @@ import Loading from '@/components/Loading'
 const Home = () => {
 
   return (
-    <section className="w-full flex-center flex-col h-full pb-20">
-      <HomeHero/>
-      <CategoryFeed/>
-      <ConcertFeed/>
-    </section>
+      <section className="w-full flex-center flex-col h-full pb-20 bg-black">
+          <HomeHero/>
+          <CategoryFeed/>
+          <ConcertFeed/>
+      </section>
   )
 }
 

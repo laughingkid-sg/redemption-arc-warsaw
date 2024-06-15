@@ -1,5 +1,5 @@
-"use client";
-import eventData from "../../../data/events.json";
+"use client"
+import eventData from "../../../data/events.json"
 import { LuCalendarDays } from "react-icons/lu";
 import { LuClock } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
@@ -145,16 +145,16 @@ const EventPurchase = ({ params }) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-start py-10 pb-20 bg-gray-200">
-      {isLoading && <Loading />}
-      <ConfirmationModal
+    <div className="h-full w-full flex flex-col items-center justify-start py-10 pb-20 bg-black">
+      {isLoading && <Loading/>}
+      <ConfirmationModal 
         isOpen={isConfirmationModalOpen}
         onClose={() => setIsConfirmationModalOpen(false)}
         url={transactionUrl}
       />
-      {isTransactionLoading && <TransactionLoading />}
-      <div className="max-w-1/2 flex flex-col items-center justify-center bg-white rounded-md p-7 shadow-lg">
-        <img src={event.eventImg} className="h-[400px] w-[800px] rounded-md" />
+      {isTransactionLoading && <TransactionLoading/>}
+      <div className="max-w-1/2 flex flex-col items-center justify-center bg-black text-white rounded-md p-7 shadow-lg">
+        <img src={event.eventImg} className="h-[400px] w-[800px] rounded-md"/>
         <div className="flex flex-col justify-start items-stretch w-[800px]">
           <div className="flex items-center my-5">
             <div className="font-extrabold text-3xl mr-3">
@@ -183,10 +183,14 @@ const EventPurchase = ({ params }) => {
               </div>
               <div className="my-0.5 text-blue-500">+ Add to Calendar</div>
               <div className="w-full">
-                <div className="mt-4 mb-1 font-semibold text-xl">Location</div>
-                <div className="my-0.5 flex flex-row items-center">
-                  <IoLocationOutline className="mr-3" />
-                  <div className="w-3/4">{event.location}</div>
+                <div className="mt-4 mb-2 font-semibold text-xl">
+                  Location
+                </div>
+                <div className="mb-4 flex flex-row items-center">
+                  <IoLocationOutline className="mr-3"/> 
+                  <div className="w-3/4">
+                    {event.location}
+                  </div>
                 </div>
                 <img
                   src="/images/stadium-google-map.png"
@@ -346,20 +350,22 @@ const EventPurchase = ({ params }) => {
             </div>
           </div>
         </div>
+
         <div className="w-[800px]">
-          <div className="mt-4 mb-1 font-semibold text-xl">
+          <div className="mt-4 mb-2 font-semibold text-xl">
             Event Description
           </div>
-          <div className="my-0.5 items-center w-full text-sm">
+          <div className="items-center w-full text-sm">
             {event.description.map((paragraph) => (
               <p key={event.eventId}>{paragraph}</p>
             ))}
           </div>
-          <br />
+          <br/>
           <div className="mt-4 mb-1 font-semibold text-xl">
             Other events you may like
           </div>
-          <div className="my-0.5 items-center w-full flex flex-row justify-evenly">
+
+          <div className="items-center w-full grid grid-cols-2 gap-5">
             <ConcertCard
               eventId="2"
               img="/images/coldplay-concert.jpg"
