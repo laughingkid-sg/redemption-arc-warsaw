@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // import { TronWeb } from "@/tronweb"; // this imports the tronweb library from tronweb.js (not in node_modules)
 // const TronWeb = require('../../tronweb')
 // const TronWeb = dynamic(()=> import('../../tronweb'), {ssr:false})
+import { ethers } from "ethers";
 
 const AppContext = React.createContext()
 const queryClient = new QueryClient() 
@@ -15,7 +16,7 @@ const AppProvider = (({children}) => {
     const [readyState, setReadyState] = useState();
     const [account, setAccount] = useState(''); // stores the current account connected
     const [network, setNetwork] = useState({});
-    const adapter = useMemo(() => new TronLinkAdapter(), []);
+    // const adapter = useMemo(() => new TronLinkAdapter(), []);
     const [myTickets, setMyTickets] = useState([])
     const [marketplaceListings, setMarketplaceListings] = useState([])
     const [availableClaims, setAvailableClaims] = useState([])
@@ -24,26 +25,74 @@ const AppProvider = (({children}) => {
 
     const [isTransactionLoading, setIsTransactionLoading] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+     const [signer, setSigner] = useState(null);
 
     const [tronWeb, setTronWeb] = useState(null);
 
     useEffect(() => {
-        if (typeof window !== "undefined" && window.tronWeb) {
-          setTronWeb(window.tronWeb);
+        if (typeof window !== "undefined" && window.ethereum) {
+        const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+        setTronWeb(ethersProvider);
+
+        const getAccount = async () => {
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const signer = ethersProvider.getSigner();
+            setSigner(signer);
+            const account = await signer.getAddress();
+            setAccount(account);
+        };
+
+        getAccount().catch(console.error);
+
+        window.ethereum.on("accountsChanged", async (accounts) => {
+            if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            setSigner(ethersProvider.getSigner(accounts[0]));
+            } else {
+            setAccount("");
+            setSigner(null);
+            }
+        });
+
+        window.ethereum.on("chainChanged", async (chainId) => {
+            setNetwork({ chainId });
+        });
         }
-      }, []);
+    }, []);
 
     // READ FUNCTIONS (NFT CONTRACT)
 
+    // const getOwnedTokenIds = async (ownerAddress, contractAddress) => {
+    //     if (!tronWeb) {
+    //         throw new Error("tronWeb is not initialized");
+    //     }
+    //     const contract = await tronWeb.contract().at(contractAddress)
+    //     const ownedTokens = await contract.getOwnedTokenIds(ownerAddress).call()
+    //     console.log("this is owned tokens: ", ownedTokens)
+    //     return ownedTokens
+    // }
+    const providerUrl = "https://rpc.ankr.com/avalanche_fuji";
+    const abi = "";
+
+
     const getOwnedTokenIds = async (ownerAddress, contractAddress) => {
-        if (!tronWeb) {
-            throw new Error("tronWeb is not initialized");
-        }
-        const contract = await tronWeb.contract().at(contractAddress)
-        const ownedTokens = await contract.getOwnedTokenIds(ownerAddress).call()
-        console.log("this is owned tokens: ", ownedTokens)
-        return ownedTokens
-    }
+      // Connect to the Ethereum provider
+      const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+
+      // Create a new contract instance with the provider
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+
+      // Ensure the contract has the function `getOwnedTokenIds`
+      if (!contract.getOwnedTokenIds) {
+        throw new Error("Contract does not have getOwnedTokenIds function");
+      }
+
+      // Call the function and get the owned tokens
+      const ownedTokens = await contract.getOwnedTokenIds(ownerAddress);
+
+      console.log("this is owned tokens: ", ownedTokens);
+      return ownedTokens;
+    };
 
     const getCatPrices = async (categoryId, contractAddress) => {
         if (!tronWeb) {
@@ -469,7 +518,7 @@ const AppProvider = (({children}) => {
         if (!tronWeb) {
             throw new Error("tronWeb is not initialized");
         }
-        console.log("tronweb connection: ", await tronWeb.isConnected())
+        // console.log("tronweb connection: ", await tronWeb.isConnected())
 
         if (tronWeb) {
             return true
@@ -501,7 +550,8 @@ const AppProvider = (({children}) => {
         <QueryClientProvider client={queryClient}>
             <AppContext.Provider value={{
                 tronWeb, 
-                adapter, readyState, account, network, isTransactionLoading, myTickets, marketplaceListings, isLoading, availableClaims, isConfirmationModalOpen, transactionUrl,
+                // adapter, 
+                readyState, account, network, isTransactionLoading, myTickets, marketplaceListings, isLoading, availableClaims, isConfirmationModalOpen, transactionUrl,
                 setReadyState, setAccount, setNetwork, setIsTransactionLoading, setMyTickets, setMarketplaceListings, setIsLoading, setAvailableClaims, setIsConfirmationModalOpen, setTransactionUrl, 
                 getOwnedTokenIds, getCatPrices, getMintLimit, getAllOwnedTokens, getAllActiveListings, isEventCanceled, getAvailableInsuranceClaims, getSaleStartTime, loadEventPageData,
                 mintTicket, buyInsurance, redeemTicket, listTicket, updateTicketStatus, approveNFTContractToMarketplace, buyTicket, claimInsurance,
