@@ -33,7 +33,7 @@ const RootLayout = ({ children }) => {
 
   return (
     <html lang="en">
-      <body className="">
+      <body className="bg-black text-white">
         {/* <WalletProvider adapters={adapters} onAccountsChanged={onAccountsChanged}> */}
           <AppProvider>
             <div className="main">
