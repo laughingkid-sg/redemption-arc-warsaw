@@ -4,52 +4,59 @@ import { usePathname } from "next/navigation";
 import { IoTicketOutline } from "react-icons/io5";
 import { useState, useMemo, useEffect } from "react";
 import { useGlobalContext } from "@/app/Context/store";
+const ethers = require("ethers");
 
 // notes about adapter:
 // you can use adapter.network() to find out about the network information
 // adapter.signTransaction() or signMessage() is available. likely need to look at tronWeb to see what they do
 
 const Nav = () => {
-  const { adapter, setReadyState, setAccount, setNetwork, readyState } =
-    useGlobalContext();
-  useEffect(() => {
-    console.log(adapter);
-    setReadyState(adapter.state);
-    if (adapter.address != null) {
-      setAccount(adapter.address);
-    }
+  const [account, setAccount] = useState(null);
 
-    adapter.on("connect", () => {
-      setReadyState(adapter.state);
-      if (adapter.address != null) {
-        setAccount(adapter.address);
+  const connectWallet = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const accountAddress = await signer.getAddress();
+        setAccount(accountAddress);
+      } catch (error) {
+        console.error("Error connecting to MetaMask:", error);
       }
-    });
+    } else {
+      console.error("MetaMask is not installed");
+    }
+  };
 
-    adapter.on("readyStateChanged", (state) => {
-      setReadyState(state);
-    });
-
-    adapter.on("accountsChanged", (data) => {
-      console.log("detected account changed");
-      setAccount(data);
-    });
-
-    adapter.on("chainChanged", (data) => {
-      setNetwork(data);
-    });
-
-    adapter.on("disconnect", () => {
-      console.log("disconnected");
-      console.log(adapter.readyState);
-      console.log(adapter.state);
-      setReadyState(adapter.state);
-    });
-    return () => {
-      // remove all listeners when components is destroyed
-      adapter.removeAllListeners();
+  useEffect(() => {
+    // Check if user is already connected
+    const checkConnection = async () => {
+      if (typeof window.ethereum !== "undefined") {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+        }
+      }
     };
-  }, [adapter]);
+
+    checkConnection();
+
+    if (typeof window.ethereum !== "undefined") {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+        } else {
+          setAccount(null);
+        }
+      });
+
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+      });
+    }
+  }, []);
 
   const pathName = usePathname(); // Use useRouter hook to get the current path
 
@@ -123,16 +130,25 @@ const Nav = () => {
             </Link>
           </ul>
         </nav>
-        <button
-          className={`${
-            readyState == "Disconnected"
-              ? "bg-yellow-300 hover:bg-yellow-400 text-black"
-              : "text-yellow-300 bg-gray-700 cursor-default"
-          } px-4 py-2 rounded font-semibold`}
-          onClick={() => adapter.connect()}
-        >
-          {readyState == "Disconnected" ? "Connect Wallet" : "Connected!"}
-        </button>
+        {account ? (
+          <div className="text-white">
+            <p>Connected Account:</p>
+            <div className="text-right max-w-[120px] max-h-[50px] overflow-x-auto overflow-y-hidden whitespace-nowrap">
+              <p>{account}</p>
+            </div>
+          </div>
+        ) : (
+          <button
+            className={`${
+              account == "Disconnected"
+                ? "bg-yellow-300 hover:bg-yellow-400 text-black"
+                : "text-yellow-300 bg-gray-700 cursor-default"
+            } px-4 py-2 rounded font-semibold`}
+            onClick={connectWallet}
+          >
+            Connect Wallet
+          </button>
+        )}
       </div>
     </div>
   );
