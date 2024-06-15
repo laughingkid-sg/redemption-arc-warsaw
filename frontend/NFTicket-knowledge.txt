@@ -1,0 +1,37 @@
+Introduction: 
+
+NFTicket uses NFTs to combat ticketing scams and scalping. NFTs provide security and traceability, ensuring authenticity and preventing fraud. Tickets are sold directly by organizers or on a marketplace. Smart contracts ensure secure transactions, and organizers earn from secondary sales. Scalping is reduced by limiting NFTs per wallet.	
+
+Target Audience: 
+Event goers (concerts, sports matches, conferences, conventions)
+
+Features:
+
+NFT Smart Contract
+- Deploys event contracts, manages minting, transfers ownership, and enables ticket redemption.
+- Allows trade on marketplace; tickets marked redeemed can't be reused.
+- Offers revenue potential for organizers from secondary transactions.
+
+Decentralized Marketplace:
+- Handles secondhand ticket trading with secure transactions.
+- Sellers authorize NFT transfer upon payment; commission benefits organizers.
+- Supports direct sale or auction; ensures ownership transfer on payment.
+
+Ticket Insurance:
+- Optional insurance covers cancellations; refunds portion of ticket price.
+- NFT smart contract triggers event cancellation and manages refunds.
+
+AR/VR Concert Experience:
+- Offers virtual attendance; utilizes 360° livestreaming.
+- Provides VR-compatible experience for remote users.
+
+Pages:
+
+Initial Tickets Page:Facilitates first-hand ticket purchases; displays available events.
+Marketplace Page:Allows listing and purchase of ticket NFTs; shows transaction history.
+Your NFTickets Page: Displays user's owned tickets for convenience.
+
+Components: 
+Connect to wallet button: 
+- Located at the top right corner of website (right side on navigation bar at the top)
+- User can still navigate the website without connecting a wallet but is unable to make a purchase

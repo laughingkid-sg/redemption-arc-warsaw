@@ -1,0 +1,53 @@
+[
+    {
+        "eventId": "1",
+        "eventTitle": "Taylor Swift Eras Tour",
+        "contractAddress": "TBurUfUEczDbcn3sZVkUKJE4Y8hT6bofLP",
+        "eventImg": "/images/taylor-swift-concert.jpg",
+        "date": "22 August 2024",
+        "year": "2024",
+        "month": "AUG",
+        "days": "22",
+        "location": "Singapore National Stadium",
+        "time": "8:00PM - 10:00PM",
+        "description": [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pulvinar augue interdum blandit vulputate. Phasellus vestibulum, sem convallis imperdiet consectetur, diam augue suscipit orci, sed vestibulum lacus augue sed ligula. Etiam tempus metus non lacinia venenatis. Vivamus et nisl in dui tempus iaculis ut rhoncus ante. Fusce at sapien id leo ultricies blandit et a libero. Integer tempus sapien non tortor faucibus, in sagittis ex consectetur. In lobortis eu neque in facilisis. Nullam dictum dictum quam, quis ullamcorper urna eleifend in. Aenean odio quam, hendrerit eget consectetur in, egestas at ante. Nam molestie, purus nec finibus porttitor, quam massa dapibus odio, eget fringilla dui lorem in odio. Morbi vel tortor sit amet ante pretium interdum.",
+            "Aliquam sit amet lorem congue, fermentum nunc eu, consequat justo. Curabitur vulputate posuere magna, non luctus nisi euismod eget. Ut in blandit neque. Nulla hendrerit turpis at porta tempor. Quisque a elementum urna. Sed tempus auctor neque, a varius eros. In varius ligula ut nisi gravida, et convallis elit commodo."
+        ],
+        "catPricing": ["40", "30", "20", "10"]
+    },
+    {
+        "eventId": "2",
+        "eventTitle": "Coldplay Music of the Spheres",
+        "contractAddress": "TNJ24EaC5jTxi2ueaw53VoPdLJseZxbKje",
+        "eventImg": "/images/coldplay-concert.jpg",
+        "date": "23 January 2025",
+        "year": "2025",
+        "month": "JAN",
+        "days": "23",
+        "location": "Singapore National Stadium",
+        "time": "8:00PM - 10:00PM",
+        "description": [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pulvinar augue interdum blandit vulputate. Phasellus vestibulum, sem convallis imperdiet consectetur, diam augue suscipit orci, sed vestibulum lacus augue sed ligula. Etiam tempus metus non lacinia venenatis. Vivamus et nisl in dui tempus iaculis ut rhoncus ante. Fusce at sapien id leo ultricies blandit et a libero. Integer tempus sapien non tortor faucibus, in sagittis ex consectetur. In lobortis eu neque in facilisis. Nullam dictum dictum quam, quis ullamcorper urna eleifend in. Aenean odio quam, hendrerit eget consectetur in, egestas at ante. Nam molestie, purus nec finibus porttitor, quam massa dapibus odio, eget fringilla dui lorem in odio. Morbi vel tortor sit amet ante pretium interdum.",
+            "Aliquam sit amet lorem congue, fermentum nunc eu, consequat justo. Curabitur vulputate posuere magna, non luctus nisi euismod eget. Ut in blandit neque. Nulla hendrerit turpis at porta tempor. Quisque a elementum urna. Sed tempus auctor neque, a varius eros. In varius ligula ut nisi gravida, et convallis elit commodo."
+        ],
+        "catPricing": ["20", "15", "10", "5"]
+    },
+    {
+        "eventId": "3",
+        "eventTitle": "The 1975 Concert",
+        "contractAddress": "TUpPhjhPir1swWfaun7NveoNkKPxZxYPh3",
+        "eventImg": "/images/1975-concert.jpg",
+        "date": "11 March 2025",
+        "year": "2025",
+        "month": "MAR",
+        "days": "11",
+        "location": "Singapore National Stadium",
+        "time": "8:00PM - 10:00PM",
+        "description": [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pulvinar augue interdum blandit vulputate. Phasellus vestibulum, sem convallis imperdiet consectetur, diam augue suscipit orci, sed vestibulum lacus augue sed ligula. Etiam tempus metus non lacinia venenatis. Vivamus et nisl in dui tempus iaculis ut rhoncus ante. Fusce at sapien id leo ultricies blandit et a libero. Integer tempus sapien non tortor faucibus, in sagittis ex consectetur. In lobortis eu neque in facilisis. Nullam dictum dictum quam, quis ullamcorper urna eleifend in. Aenean odio quam, hendrerit eget consectetur in, egestas at ante. Nam molestie, purus nec finibus porttitor, quam massa dapibus odio, eget fringilla dui lorem in odio. Morbi vel tortor sit amet ante pretium interdum.",
+            "Aliquam sit amet lorem congue, fermentum nunc eu, consequat justo. Curabitur vulputate posuere magna, non luctus nisi euismod eget. Ut in blandit neque. Nulla hendrerit turpis at porta tempor. Quisque a elementum urna. Sed tempus auctor neque, a varius eros. In varius ligula ut nisi gravida, et convallis elit commodo."
+        ],
+        "catPricing": ["20", "15", "10", "5"]
+    }
+]

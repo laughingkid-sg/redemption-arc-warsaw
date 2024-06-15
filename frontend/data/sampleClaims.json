@@ -1,0 +1,12 @@
+[
+    {
+        "contractAddress": "TTZmnpnauSJHYPPVoHRv98cpUs5ndHnRDB",
+        "eventId": "1",
+        "eventTitle": "Taylor Swift Eras Tour",
+        "tokenId": "1",
+        "isInsured": "true",
+        "catClass": "1",
+        "isCancelled": "true",
+        "refundAmount": "4800000"
+    }
+]
