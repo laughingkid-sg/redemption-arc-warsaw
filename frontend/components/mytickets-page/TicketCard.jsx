@@ -11,18 +11,13 @@ import ConfirmationModal from '../ConfirmationModal';
 import { useQueryClient } from 'react-query';
 
 const TicketCard = ({contractAddress, eventId, title, date, time, location, tokenId, isRedeemed, isInsured, catClass, imageURL, isCancelled, originalTicketPrice, isListed}) => {
-    const {isTransactionLoading, setIsTransactionLoading, buyInsurance, isTronLinkConnected, redeemTicket, decodeHexString, setMyTickets, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl, account, getAllOwnedTokens} = useGlobalContext()
+    const {isTransactionLoading, setIsTransactionLoading, buyInsurance, redeemTicket, decodeHexString, setMyTickets, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl, account, getAllOwnedTokens} = useGlobalContext()
     const [isListPopupOpen, setIsListPopupOpen] = useState(false); 
     const [isRedeemPopupOpen, setIsRedeemPopupOpen] = useState(false); 
     const queryClient = useQueryClient()
 
     const handleBuyInsurance = async () => {
         setIsTransactionLoading(true)
-        if (!isTronLinkConnected()) {
-          alert("Please connect your TronLink Wallet before buying ticket insurance")
-          setIsTransactionLoading(false)
-          return
-        }
     
         try {
           const {success, error, result} = await buyInsurance(contractAddress, tokenId, originalTicketPrice)
@@ -35,7 +30,7 @@ const TicketCard = ({contractAddress, eventId, title, date, time, location, toke
           setTimeout(() => {
             setIsTransactionLoading(false);
           }, 10000);
-          setTransactionUrl(`https://nile.tronscan.org/#/transaction/${result}`)
+          setTransactionUrl(`https://subnets-test.avax.network/c-chain/tx/${result}`)
           setIsConfirmationModalOpen(true)
         } catch (err) {
           alert(`Error during transaction: ${err.message}`);

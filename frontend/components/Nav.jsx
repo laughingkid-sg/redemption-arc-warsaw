@@ -6,9 +6,6 @@ import { useState, useMemo, useEffect } from "react";
 import { useGlobalContext } from "@/app/Context/store";
 const ethers = require("ethers");
 
-// notes about adapter:
-// you can use adapter.network() to find out about the network information
-// adapter.signTransaction() or signMessage() is available. likely need to look at tronWeb to see what they do
 
 const Nav = () => {
   const [account, setAccount] = useState(null);

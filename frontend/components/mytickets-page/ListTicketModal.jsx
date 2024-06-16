@@ -3,9 +3,10 @@ import { IoClose } from "react-icons/io5";
 import { useGlobalContext } from '@/app/Context/store';
 import ConfirmationModal from '../ConfirmationModal';
 import { useQueryClient } from 'react-query';
+import { ethers } from "ethers";
 
 const ListTicketModal = ({ tokenId, contractAddress, onClose }) => {
-    const {listTicket, setIsTransactionLoading, updateTicketStatus, isTronLinkConnected, decodeHexString, approveNFTContractToMarketplace, getAllOwnedTokens, account, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl} = useGlobalContext()
+    const {listTicket, setIsTransactionLoading, updateTicketStatus, decodeHexString, approveNFTContractToMarketplace, getAllOwnedTokens, account, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl} = useGlobalContext()
     const [listedTRXPrice, setListedTRXPrice] = useState()
     const queryClient = useQueryClient()
 
@@ -21,26 +22,22 @@ const ListTicketModal = ({ tokenId, contractAddress, onClose }) => {
         }
 
         setIsTransactionLoading(true)
-        if (!isTronLinkConnected()) {
-          alert("Please connect your TronLink Wallet before buying ticket insurance")
-          setIsTransactionLoading(false)
-          return
-        }
     
         try {
-          const {success, error, result} = await listTicket(contractAddress, tokenId, listedTRXPrice)
+          const priceInWei = ethers.utils.parseEther(listedTRXPrice)
+          const {success, error, result} = await listTicket(contractAddress, tokenId, priceInWei)
     
           if (!success){
             throw new Error(decodeHexString(error.output.contractResult[0]))
           }
           // getAllOwnedTokens(account)
           queryClient.invalidateQueries(['tickets', account])
-          setTransactionUrl(`https://nile.tronscan.org/#/transaction/${result}`)
+          setTransactionUrl(`https://subnets-test.avax.network/c-chain/tx/${result}`)
           setIsConfirmationModalOpen(true)
           setTimeout(() => {
             setIsTransactionLoading(false);
             onClose();
-          }, 10000);
+          }, 2000);
         } catch (err) {
           alert(`Error during transaction: ${err.message}`);
           setIsTransactionLoading(false)
@@ -49,11 +46,6 @@ const ListTicketModal = ({ tokenId, contractAddress, onClose }) => {
 
     const handleMarketplaceApproval = async () => {
         setIsTransactionLoading(true)
-        if (!isTronLinkConnected()) {
-          alert("Please connect your TronLink Wallet before buying ticket insurance")
-          setIsTransactionLoading(false)
-          return
-        }
     
         try {
           const {success, error, result} = await approveNFTContractToMarketplace(contractAddress, tokenId)
@@ -61,7 +53,7 @@ const ListTicketModal = ({ tokenId, contractAddress, onClose }) => {
           if (!success){
             throw new Error(decodeHexString(error.output.contractResult[0]))
           }
-          setTransactionUrl(`https://nile.tronscan.org/#/transaction/${result}`)
+          setTransactionUrl(`https://subnets-test.avax.network/c-chain/tx/${result}`)
           setIsConfirmationModalOpen(true)
         } catch (err) {
           alert(`Error during transaction: ${err.message}`);
@@ -88,7 +80,7 @@ const ListTicketModal = ({ tokenId, contractAddress, onClose }) => {
             <div className='text-xl font-bold text-center'>Step 1: Approve The Marketplace For Transactions With Your Ticket</div>
             <button className='bg-yellow-300 hover:bg-yellow-400 text-black font-semibold text-lg w-28 py-1 rounded-md mt-5' onClick={handleMarketplaceApproval}>Approve</button>
             <div className='text-xl font-bold mt-5'>Step 2: Set Your Listing Price</div>
-            <input type='number' placeholder='Price in TRX' className="border rounded-md w-3/4 h-10 mt-5 px-3" value={listedTRXPrice} onChange={e => setListedTRXPrice(e.target.value)} />
+            <input type='number' placeholder='Price in AVAX' className="border rounded-md w-3/4 h-10 mt-5 px-3" value={listedTRXPrice} onChange={e => setListedTRXPrice(e.target.value)} />
             <button className='bg-yellow-300 hover:bg-yellow-400 text-black font-semibold text-lg w-28 py-1 rounded-md mt-5' onClick={listTicketForSale}>List</button>
         </div>
       </div>

@@ -12,7 +12,7 @@ import ConfirmationModal from '../ConfirmationModal';
 import { useQueryClient } from 'react-query';
 
 const ListingModal = ({ isOpen, listing, onClose }) => {
-  const {buyTicket, isTronLinkConnected, setIsTransactionLoading, decodeHexString, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl, account} = useGlobalContext()
+  const {buyTicket, setIsTransactionLoading, decodeHexString, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl, account} = useGlobalContext()
   if (!isOpen) return null;
 
   console.log(listing)
@@ -24,11 +24,6 @@ const ListingModal = ({ isOpen, listing, onClose }) => {
 
   const buyResaleTicket = async () => {
     setIsTransactionLoading(true)
-    if (!isTronLinkConnected()) {
-      alert("Please connect your TronLink Wallet before buying ticket insurance")
-      setIsTransactionLoading(false)
-      return
-    }
 
     try {
       const {success, error, result} = await buyTicket(listing.listingId, listing.listingPrice)
@@ -37,7 +32,7 @@ const ListingModal = ({ isOpen, listing, onClose }) => {
         throw new Error(decodeHexString(error.output.contractResult[0]))
       }
       queryClient.invalidateQueries(['tickets', account])
-      setTransactionUrl(`https://nile.tronscan.org/#/transaction/${result}`)
+      setTransactionUrl(`https://subnets-test.avax.network/c-chain/tx/${result}`)
       setIsConfirmationModalOpen(true)
     } catch (err) {
       alert(`Error during transaction: ${err.message}`);

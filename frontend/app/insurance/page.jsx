@@ -8,7 +8,7 @@ import ConfirmationModal from '@/components/ConfirmationModal'
 
 const Insurance = () => {
   const {account, getAvailableInsuranceClaims, isLoading, setIsLoading, availableClaims, claimInsurance, 
-    setIsTransactionLoading, isTronLinkConnected, decodeHexString, 
+    setIsTransactionLoading, decodeHexString, 
     isTransactionLoading, setIsConfirmationModalOpen, isConfirmationModalOpen, transactionUrl, setTransactionUrl
   } = useGlobalContext()
 
@@ -30,11 +30,6 @@ const Insurance = () => {
 
   const handleClaimInsurance = async (contractAddress, tokenId) => {
     setIsTransactionLoading(true)
-    if (!isTronLinkConnected()) {
-      alert("Please connect your TronLink Wallet before buying ticket insurance")
-      setIsTransactionLoading(false)
-      return
-    }
 
     try {
       const {success, error, result} = await claimInsurance(contractAddress, tokenId)
@@ -43,7 +38,7 @@ const Insurance = () => {
         throw new Error(decodeHexString(error.output.contractResult[0]))
       }
 
-      setTransactionUrl(`https://nile.tronscan.org/#/transaction/${result}`)
+      setTransactionUrl(`https://subnets-test.avax.network/c-chain/tx/${result}`)
       setIsConfirmationModalOpen(true)
       getAvailableInsuranceClaims(account)
     } catch (err) {
@@ -69,7 +64,7 @@ const Insurance = () => {
         </div>
       </div>
       <div className='w-full flex flex-col items-center justify-start'>
-        {!account && "Please connect your TronLink Wallet to see your available insurance claims"}
+        {!account && "Please connect your MetaMask Wallet to see your available insurance claims"}
         <br/>
         <div className="w-3/4">
           <table className="min-w-full text-sm text-left">

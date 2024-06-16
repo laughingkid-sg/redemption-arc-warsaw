@@ -4,7 +4,7 @@ import { useGlobalContext } from '@/app/Context/store';
 import { useQueryClient } from 'react-query';
 
 const RedeemTicketModal = ({ tokenId, contractAddress, onClose }) => {
-    const {setIsTransactionLoading, isTronLinkConnected, decodeHexString, getAllOwnedTokens, account, redeemTicket} = useGlobalContext()
+    const {setIsTransactionLoading, decodeHexString, getAllOwnedTokens, account, redeemTicket} = useGlobalContext()
     const [userEmail, setUserEmail] = useState()
     const [isChecked, setIsChecked] = useState(false)
     const queryClient = useQueryClient()
@@ -26,11 +26,6 @@ const RedeemTicketModal = ({ tokenId, contractAddress, onClose }) => {
         }
 
         setIsTransactionLoading(true)
-        if (!isTronLinkConnected()) {
-          alert("Please connect your TronLink Wallet before redeeming your ticket")
-          setIsTransactionLoading(false)
-          return
-        }
 
         try {
             const {success, error} = await redeemTicket(contractAddress, tokenId)
@@ -53,7 +48,7 @@ const RedeemTicketModal = ({ tokenId, contractAddress, onClose }) => {
             setTimeout(() => {
                 setIsTransactionLoading(false);
                 onClose();
-            }, 10000);
+            }, 2000);
         } catch (error) {
             alert(`Error getting image: ${error.message}`);
             setIsTransactionLoading(false)

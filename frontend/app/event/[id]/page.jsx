@@ -4,6 +4,7 @@ import { LuCalendarDays } from "react-icons/lu";
 import { LuClock } from "react-icons/lu";
 import { IoLocationOutline } from "react-icons/io5";
 import { CiCreditCard1 } from "react-icons/ci";
+import { ethers } from "ethers";
 
 import ConcertCard from "@/components/homepage/ConcertCard";
 import { IoTicketOutline } from "react-icons/io5";
@@ -24,7 +25,6 @@ const EventPurchase = ({ params }) => {
     isTransactionLoading,
     setIsTransactionLoading,
     mintTicket,
-    isTronLinkConnected,
     getCatPrices,
     getMintLimit,
     isEventCanceled,
@@ -37,6 +37,9 @@ const EventPurchase = ({ params }) => {
     setIsLoading,
     loadEventPageData,
     account,
+
+    getAllOwnedTokens,
+    getOwnedTokenIds
   } = useGlobalContext();
 
   const [selectedCategory, setSelectedCategory] = useState(1); // actual cat index is different from the selected categoryyyyy
@@ -106,11 +109,6 @@ const EventPurchase = ({ params }) => {
 
   const handlePurchase = async () => {
     setIsTransactionLoading(true);
-    if (!isTronLinkConnected()) {
-      alert("Please connect your TronLink Wallet before purchasing a ticket!");
-      setIsTransactionLoading(false);
-      return;
-    }
 
     const selectedCatIndex = selectedCategory - 1;
 
@@ -124,6 +122,7 @@ const EventPurchase = ({ params }) => {
         selectedCatIndex,
         event.contractAddress
       );
+
       const { success, error, result } = await mintTicket(
         selectedCatIndex,
         selectedQuantity,
@@ -132,10 +131,10 @@ const EventPurchase = ({ params }) => {
       );
 
       if (!success) {
-        throw new Error(decodeHexString(error.output.contractResult[0]));
+        throw new Error(error);
       }
       queryClient.invalidateQueries(["tickets", account]);
-      setTransactionUrl(`https://nile.tronscan.org/#/transaction/${result}`);
+      setTransactionUrl(`https://subnets-test.avax.network/c-chain/tx/${result}`);
       setIsConfirmationModalOpen(true);
     } catch (err) {
       alert(`Error during transaction: ${err.message}`);
@@ -213,7 +212,7 @@ const EventPurchase = ({ params }) => {
                 {event.catPricing.map((price, index) => (
                   <div className="text-sm" key={index}>
                     Cat {index + 1}:{" "}
-                    <span className="font-semibold">{price} TRX</span>
+                    <span className="font-semibold">{ethers.utils.formatEther(price)} AVAX</span>
                   </div>
                 ))}
                 <div className="text-sm">
