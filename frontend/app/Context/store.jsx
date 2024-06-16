@@ -466,7 +466,7 @@ const AppProvider = (({children}) => {
         const receipt = await tx.wait();
 
         console.log(receipt);
-        return { success: true, txnhash: receipt.transactionHash };
+        return { success: true, result: receipt.transactionHash };
     } catch (error) {
         console.log("Error minting ticket: ", error);
         return { success: false, error };

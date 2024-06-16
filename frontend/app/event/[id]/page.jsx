@@ -118,6 +118,7 @@ const EventPurchase = ({ params }) => {
 
     alert("Purchase logic not implemented yet, you chose to pay with: " + paymentMethod);
 
+    const selectedCatIndex = selectedCategory - 1
     console.log(
       "current state information: ",
       selectedCatIndex,
