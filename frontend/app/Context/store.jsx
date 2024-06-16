@@ -189,70 +189,6 @@ const AppProvider = (({children}) => {
       }
     };
 
-    // function to get all the owned tokens across all event contracts
-    // const getAllOwnedTokens = async (userAddress) => {
-    //     if (!tronWeb) {
-    //         throw new Error("tronWeb is not initialized");
-    //     }
-    //     try {
-    //         console.log("getAllOwnedTokens called: ", userAddress);
-    //         setMyTickets([])
-    //         let allNewTickets = []; // Aggregate all tickets here
-
-    //         const marketplaceContract = await tronWeb.contract().at(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS)
-    
-    //         // Wait for all promises from map to resolve
-    //         await Promise.all(eventData.map(async (event) => {
-    //             console.log(event.eventTitle, event.contractAddress);
-    //             const currentContractAddress = event.contractAddress;
-    //             const contract = await tronWeb.contract().at(currentContractAddress);
-    //             const ownedTokenIds = await contract.getOwnedTokenIds(userAddress).call();
-    //             console.log(event.eventTitle, "tickets found: ", ownedTokenIds);
-    
-    //             // Temporary array for this contract
-    //             let tempTickets = [];
-    //             for (let i = 0; i < ownedTokenIds.length; i++) {
-    //                 const currentTokenId = tronWeb.toDecimal(ownedTokenIds[i]._hex);
-    //                 const isRedeemed = await contract.isTicketRedeemed(currentTokenId).call();
-    //                 const isInsured = await contract.ticketInsurance(currentTokenId).call();
-    //                 const catIndex = await contract.determineCategoryId(currentTokenId).call();
-    //                 const catClass = tronWeb.toDecimal(catIndex) + 1;
-    //                 const imageURL = await contract.tokenURI(currentTokenId).call();
-    //                 const isCancelled = await contract.eventCanceled().call();
-    //                 const isListed = await marketplaceContract.isNFTListed(currentContractAddress, currentTokenId).call()
-    
-    //                 const newTicket = {
-    //                     "contractAddress": currentContractAddress, 
-    //                     "eventId": event.eventId,
-    //                     "eventTitle": event.eventTitle,
-    //                     "date": event.date,
-    //                     "time": event.time, 
-    //                     "location": event.location, 
-    //                     "tokenId": currentTokenId,
-    //                     "isRedeemed": isRedeemed,
-    //                     "isInsured": isInsured,
-    //                     "catClass": catClass,
-    //                     "imageURL": imageURL,
-    //                     "isCancelled": isCancelled,
-    //                     "originalTicketPrice": tronWeb.toSun(event.catPricing[catIndex]),
-    //                     "isListed": isListed
-    //                 };
-    
-    //                 tempTickets.push(newTicket);
-    //             }
-    
-    //             // Combine the tickets from this iteration into the main array
-    //             allNewTickets = allNewTickets.concat(tempTickets);
-    //         }));
-    //         // Now update the state once with all new tickets
-    //         setMyTickets(allNewTickets);
-    //         return allNewTickets
-    //     } catch (error) {
-    //         console.error("Error in getAllOwnedTokens: ", error);
-    //         throw error;
-    //     }
-    // }
-
     const isTicketRedeemed = async (contractAddress, tokenId) => {
         const contract = await tronWeb.contract().at(contractAddress)
         const isRedeemed = await contract.isTicketRedeemed(tokenId).call()
@@ -538,24 +474,42 @@ const AppProvider = (({children}) => {
 
     // WRITE FUNCTIONS (NFT CONTRACT)
 
-    const mintTicket = async (categoryId, quantity, fee, contractAddress) => {
-        if (!tronWeb) {
-            throw new Error("tronWeb is not initialized");
-        }
-        try {
-            const contract = await tronWeb.contract().at(contractAddress)
-            const result = await contract.mintTicket(categoryId, quantity).send({
-                feeLimit: 1000000000,
-                callValue: fee * quantity,
-                // shouldPollResponse: true
-            })
-            console.log(result)
-            return {success: true, result}
-        } catch (error) {
-            console.log("Error minting ticket: ", error)
-            return { success: false, error }
-        }
+    const mintTicket = async (
+    categoryId,
+    quantity,
+    fee,
+    contractAddress,
+    ) => {
+    // Connect to the Ethereum provider
+    const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+
+    // Create a new contract instance with the wallet (which includes signing capabilities)
+     const contract = new ethers.Contract(contractAddress, abi, signer);
+    // const contract = new ethers.Contract(contractAddress, marketplaceABI, wallet);
+
+    try {
+        // Estimate the gas limit for the transaction
+        const gasLimit = await contract.estimateGas.mintTicket(categoryId, quantity, {
+        value: ethers.utils.parseUnits((fee * quantity).toString(), "wei"),
+        });
+
+        // Call the mintTicket function
+        const tx = await contract.mintTicket(categoryId, quantity, {
+        value: ethers.utils.parseUnits((fee * quantity).toString(), "wei"),
+        gasLimit: gasLimit,
+        // gasPrice: ethers.utils.parseUnits('20', 'gwei'), // optionally specify the gas price
+        });
+
+        // Wait for the transaction to be mined
+        const receipt = await tx.wait();
+
+        console.log(receipt);
+        return { success: true, receipt };
+    } catch (error) {
+        console.log("Error minting ticket: ", error);
+        return { success: false, error };
     }
+    };
 
     const buyInsurance = async (contractAddress, tokenId, originalTicketPrice) => {
         if (!tronWeb) {
