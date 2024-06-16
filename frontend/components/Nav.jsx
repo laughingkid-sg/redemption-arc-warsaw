@@ -68,7 +68,7 @@ const Nav = () => {
         <Link href="/" className="text-yellow-300 font-bold text-2xl">
           <div className="flex items-center">
             <IoTicketOutline size={30} className="mr-1" />
-            NFTicket
+            PolChain
           </div>
         </Link>
         <nav className=" h-full">
@@ -78,7 +78,7 @@ const Nav = () => {
                 className={`${
                   isActive("/")
                     ? "text-white font-semibold"
-                    : "text-gray-300 hover:text-white"
+                    : "text-white hover:text-yellow-300"
                 } h-full`}
               >
                 Home
@@ -89,7 +89,7 @@ const Nav = () => {
                 className={`${
                   isActive("/marketplace")
                     ? "text-white font-semibold"
-                    : "text-gray-300 hover:text-white"
+                    : "text-white hover:text-yellow-300"
                 } h-full`}
               >
                 Marketplace
@@ -100,7 +100,7 @@ const Nav = () => {
                 className={`${
                   isActive("/mytickets")
                     ? "text-white font-semibold"
-                    : "text-gray-300 hover:text-white"
+                    : "text-white hover:text-yellow-300"
                 } h-full`}
               >
                 My Tickets
@@ -111,7 +111,7 @@ const Nav = () => {
                 className={`${
                   isActive("/insurance")
                     ? "text-white font-semibold"
-                    : "text-gray-300 hover:text-white"
+                    : "text-white hover:text-yellow-300"
                 } h-full`}
               >
                 Insurance Claims
@@ -122,7 +122,7 @@ const Nav = () => {
                 className={`${
                   isActive("/vr")
                     ? "text-white font-semibold"
-                    : "text-gray-300 hover:text-white"
+                    : "text-white hover:text-yellow-300"
                 } h-full`}
               >
                 VR Experience (Beta)

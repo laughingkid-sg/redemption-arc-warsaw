@@ -1,6 +1,6 @@
 Introduction: 
 
-NFTicket uses NFTs to combat ticketing scams and scalping. NFTs provide security and traceability, ensuring authenticity and preventing fraud. Tickets are sold directly by organizers or on a marketplace. Smart contracts ensure secure transactions, and organizers earn from secondary sales. Scalping is reduced by limiting NFTs per wallet.	
+PolChain uses NFTs to combat ticketing scams and scalping. NFTs provide security and traceability, ensuring authenticity and preventing fraud. Tickets are sold directly by organizers or on a marketplace. Smart contracts ensure secure transactions, and organizers earn from secondary sales. Scalping is reduced by limiting NFTs per wallet.
 
 Target Audience: 
 Event goers (concerts, sports matches, conferences, conventions)

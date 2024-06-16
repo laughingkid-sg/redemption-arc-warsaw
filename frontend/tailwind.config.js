@@ -81,6 +81,7 @@ module.exports = {
         "publico" : ['Publico' , 'Serif'],
         "montserrat": ['Montserrat'],
         "playfair-display": ['Playfair Display'],
+        "work-sans": ['Work Sans'],
       }
     },
   },

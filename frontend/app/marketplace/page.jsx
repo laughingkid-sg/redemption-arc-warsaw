@@ -6,6 +6,8 @@ import HomeSearchBar from '@/components/homepage/HomeSearchBar'
 import ListingCard from '@/components/marketplace-page/ListingCard'
 import ListingModal from '@/components/marketplace-page/ListingModal'
 import Loading from '@/components/Loading'
+import { MdOutlineSort } from "react-icons/md";
+import { IoIosArrowDown } from "react-icons/io";
 
 const Marketplace = () => {
 
@@ -41,24 +43,33 @@ const Marketplace = () => {
     return (
       <section className="w-full flex-center flex-col h-full pb-20">
         {/* {isLoading && <Loading/>} */}
-          <div className='w-full bg-gray-800 flex flex-col items-center pt-6'>
-            <HomeSearchBar/>
-            <div className='self-end my-5 mx-8'>
-              <div className='text-white mb-1'>Sort By:</div>
-              <div className=''>
-                <select name="location" id="location" className="outline-none rounded-md p-1">
-                  <option>Relevance</option>
-                  <option>Latest</option>
-                  <option>Popular</option>
-                  <option>Price: Low to High</option>
-                  <option>Price: High to Low</option>
-                </select>
+          <div className='w-full bg-gray-800 flex justify-center items-center'>
+            <div className="hero-image flex flex-col w-full h-80 items-center justify-center relative">
+              <div className="absolute w-full h-full bg-black bg-opacity-40 z-0"></div> {/* Overlay */}
+              <div className="z-10 font-bold text-white text-3xl mb-3">
+                Shop for tickets at the <span className="text-yellow-300">Marketplace</span>
               </div>
+              <HomeSearchBar/>
             </div>
           </div>
+
           <div className='flex p-10 '>
             <div className='w-1/5 flex flex-col items-start justify-start border-r border-gray-300'>
               <div className='font-semibold text-lg'>Filters</div>
+
+              <div className='my-2'>
+                <div className='text-white mb-1 flex'><MdOutlineSort className="mr-2 mt-1"/>Sort By:</div>
+                  <div className=''>
+                    <select name="location" id="location" className="outline-none rounded-md p-1">
+                      <option>Relevance</option>
+                      <option>Latest</option>
+                      <option>Popular</option>
+                      <option>Price: Low to High</option>
+                      <option>Price: High to Low</option>
+                    </select>
+                  </div>
+              </div>
+
               <form className='w-full'>
                 <div className='border-b border-gray-300 py-2 w-5/6'>
                   <div className='font-semibold text-md mb-2'>Price</div>
@@ -110,7 +121,8 @@ const Marketplace = () => {
                   <div className='font-semibold text-md mb-2'>Category</div>
                   <input type='checkbox' id='entertainment' name='entertainment' value='Entertainment'/>
                   <label htmlFor='entertainment'>Entertainment</label><br/>
-                  <input type='checkbox' id='educationBusiness' name='educationBusiness' value='Educational & Business'/>
+                  <input type='checkbox' id='educationBusiness' name='educationBusiness'
+                         value='Educational & Business'/>
                   <label htmlFor='educationBusiness'>Educational & Business</label><br/>
                   <input type='checkbox' id='culturalArts' name='culturalArts' value='Cultural & Arts'/>
                   <label htmlFor='culturalArts'>Cultural & Arts</label><br/>
@@ -122,7 +134,7 @@ const Marketplace = () => {
                   <label htmlFor='travelAdventure'>Travel & Adventure</label><br/>
                   <button className='text-blue-600'>More</button>
                 </div>
-                <button className="border rounded w-5/6 flex justify-center items-center font-bold border-gray-600 text-gray-700
+                <button className="border rounded-3xl w-5/6 flex justify-center items-center border-white text-black bg-white
                 hover:bg-yellow-300 hover:border-black hover:text-black mt-3 py-1">
                   Confirm
                 </button>
@@ -130,17 +142,18 @@ const Marketplace = () => {
             </div>
             <div className='w-4/5 flex flex-wrap justify-evenly items-start h-min px-4'>
               {marketplaceListings.map(
-                (listing) => (
-                  <div onClick={() => handleListingClick(listing)} key={listing.listingId} className='cursor-pointer w-1/2 '>
-                    <ListingCard
-                      listing={listing}
-                    />
-                  </div>
-                )
+                  (listing) => (
+                      <div onClick={() => handleListingClick(listing)} key={listing.listingId}
+                           className='cursor-pointer w-1/2 '>
+                        <ListingCard
+                            listing={listing}
+                        />
+                      </div>
+                  )
               )}
             </div>
           </div>
-          <ListingModal isOpen={!!selectedListing} listing={selectedListing} onClose={handleCloseModal} />
+        <ListingModal isOpen={!!selectedListing} listing={selectedListing} onClose={handleCloseModal}/>
       </section>
     )
   }

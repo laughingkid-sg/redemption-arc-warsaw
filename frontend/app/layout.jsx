@@ -21,7 +21,7 @@ import {
 import Chat from "@/components/chat/Chat";
 
 export const metadata = {
-  title: "NFTicket",
+  title: "PolChain",
   description: "NFT ticketing service for events",
 };
 
@@ -33,7 +33,7 @@ const RootLayout = ({ children }) => {
 
   return (
     <html lang="en">
-      <body className="bg-black text-white">
+      <body className="font-work-sans bg-black text-white">
         {/* <WalletProvider adapters={adapters} onAccountsChanged={onAccountsChanged}> */}
           <AppProvider>
             <div className="main">
