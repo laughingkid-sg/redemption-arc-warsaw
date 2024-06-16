@@ -50,6 +50,7 @@ const EventPurchase = ({ params }) => {
   const eventId = params.id;
   const event = eventData.find((event) => event.eventId === eventId);
   const queryClient = useQueryClient();
+  const [paymentMethod, setPaymentMethod] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -91,6 +92,10 @@ const EventPurchase = ({ params }) => {
     loadData();
   }, []);
 
+  const handlePaymentChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
+
   const incrementCat = () => {
     setSelectedCategory((prevCount) => prevCount + 1);
   };
@@ -107,10 +112,11 @@ const EventPurchase = ({ params }) => {
     setSelectedQuantity((prevCount) => prevCount - 1);
   };
 
+  //TODO: Implement the purchase logic
   const handlePurchase = async () => {
     setIsTransactionLoading(true);
 
-    const selectedCatIndex = selectedCategory - 1;
+    alert("Purchase logic not implemented yet, you chose to pay with: " + paymentMethod);
 
     console.log(
       "current state information: ",
@@ -270,82 +276,60 @@ const EventPurchase = ({ params }) => {
               </div>
               <div className="w-3/4 flex justify-center flex-col mt-3 gap-y-2">
                 <h1 className="font-bold">Pay using</h1>
-                <button
-                  disabled={isCancelled}
-                  className={`${
-                    isCancelled
-                      ? "bg-gray-400 text-gray-500"
-                      : "border-2  group transition duration-300 ease-in-out transform hover:scale-105 hover:z-10 "
-                  } 
-                  w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
-                  onClick={handlePurchase}
+                <div
+                  className={`border-2 group w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
                 >
-                  <div
-                    className={`ml-3 flex items-center ${
-                      isCancelled ? "opacity-50" : ""
-                    }`}
-                  >
+                  <div className={`ml-3 flex items-center`}>
                     <input
                       type="radio"
                       name="payment"
                       id="blik"
+                      value="creditCard"
                       className="mr-2"
+                      onChange={handlePaymentChange}
                     />
                     <CiCreditCard1 className="w-6 h-6 mr-2" />
                     <p className="font-semibold text-sm">Credit Card</p>
                   </div>
-                </button>
-                <button
-                  disabled={isCancelled}
-                  className={`${
-                    isCancelled
-                      ? "bg-gray-400 text-gray-500"
-                      : "border-2  group transition duration-300 ease-in-out transform hover:scale-105 hover:z-10 "
-                  } 
-                  w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
-                  onClick={handlePurchase}
+                </div>
+                <div
+                  className={`border-2 group w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
                 >
-                  <div
-                    className={`ml-3 flex items-center ${
-                      isCancelled ? "opacity-50" : ""
-                    }`}
-                  >
+                  <div className={`ml-3 flex items-center`}>
                     <input
                       type="radio"
                       name="payment"
                       id="blik"
+                      value="blik"
                       className="mr-2"
+                      onChange={handlePaymentChange}
                     />
                     <img src="/images/blik.svg" className="w-9 h-6 mr-2" />
                     <p className="font-semibold  text-sm">blik</p>
                   </div>
-                </button>
-                <button
-                  disabled={isCancelled}
-                  className={`${
-                    isCancelled
-                      ? "bg-gray-400 text-gray-500"
-                      : "border-2  group transition duration-300 ease-in-out transform hover:scale-105 hover:z-10 "
-                  } 
-                  w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
-                  onClick={handlePurchase}
+                </div>
+                <div
+                  className={`border-2 group w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
                 >
-                  <div
-                    className={`ml-3 flex items-center ${
-                      isCancelled ? "opacity-50" : ""
-                    }`}
-                  >
+                  <div className={`ml-3 flex items-center`}>
                     <input
                       type="radio"
                       name="payment"
                       id="blik"
+                      value="ava"
                       className="mr-2"
+                      onChange={handlePaymentChange}
                     />
-                    {/* <img src="/images/AVA.png" className="w-6 h-6 mr-2" /> */}
                     AVA Token
                   </div>
-                </button>
-                <button className="bg-yellow-400 w-[200px] p-2 rounded-lg">
+                </div>
+                <button
+                  disabled={paymentMethod === null}
+                  onClick={handlePurchase}
+                  className={`${
+                    paymentMethod === null ? "bg-gray-400 text-gray-200" : "bg-yellow-400"
+                  }  w-[200px] p-2 rounded-lg`}
+                >
                   Continue
                 </button>
               </div>

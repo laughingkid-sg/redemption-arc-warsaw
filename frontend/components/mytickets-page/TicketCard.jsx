@@ -89,13 +89,13 @@ const TicketCard = ({contractAddress, eventId, title, date, time, location, toke
             <div>Token ID: {tokenId}</div>
         </div>
         <div className=' flex flex-col justify-evenly items-center'>
-            <button disabled={isInsured || isCancelled} className={`${isInsured ? "text-yellow-300 bg-gray-700 cursor-default" :"bg-yellow-300 hover:bg-yellow-400 text-black" } font-semibold text-lg w-28 py-1 rounded-md`} onClick={handleBuyInsurance}>
+            <button disabled={isInsured || isCancelled} className={`${isInsured ? "text-yellow-300 bg-gray-700 cursor-default" :"bg-yellow-300 hover:bg-yellow-400 text-black" } font-work-sans  text-md w-28 py-1 rounded-3xl`} onClick={handleBuyInsurance}>
                 {isInsured ? "Insured!": "Insure"}
             </button>
-            <button disabled={isRedeemed || isCancelled} className={`${isRedeemed ? "text-yellow-300 bg-gray-700 cursor-default" :"bg-yellow-300 hover:bg-yellow-400 text-black" } font-semibold text-lg w-28 py-1 rounded-md`} onClick={() => setIsRedeemPopupOpen(true)}>
+            <button disabled={isRedeemed || isCancelled} className={`${isRedeemed ? "text-yellow-300 bg-gray-700 cursor-default" :"bg-yellow-300 hover:bg-yellow-400 text-black" } font-work-sans  text-md w-28 py-1 rounded-3xl`} onClick={() => setIsRedeemPopupOpen(true)}>
                 {isRedeemed ? "Redeemed!": "Redeem"}
             </button>
-            <button disabled={isListed} className={`${isListed ? "text-yellow-300 bg-gray-700 cursor-default" :"bg-yellow-300 hover:bg-yellow-400 text-black" } font-semibold text-lg w-28 py-1 rounded-md`} onClick={() => setIsListPopupOpen(true)}>
+            <button disabled={isListed} className={`${isListed ? "text-yellow-300 bg-gray-700 cursor-default" :"bg-yellow-300 hover:bg-yellow-400 text-black" } font-work-sans  text-md w-28 py-1 rounded-3xl`} onClick={() => setIsListPopupOpen(true)}>
                 {isListed ? "Listed!": "List"}  
             </button>
         </div>

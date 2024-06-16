@@ -56,8 +56,8 @@ const RedeemTicketModal = ({ tokenId, contractAddress, onClose }) => {
     }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20" onClick={onClose}>
-      <div className="bg-white p-5 rounded-lg w-1/2 h-1/2 overflow-y-auto flex flex-col" onClick={handleModalClick}>
+    <div className="fixed inset-0  text-black bg-opacity-50 flex justify-center items-center z-20" onClick={onClose}>
+      <div className=" p-5 bg-white rounded-lg w-1/2 h-1/2 overflow-y-auto flex flex-col" onClick={handleModalClick}>
         <div className='w-full flex justify-end'>
             <button onClick={onClose} className="text-lg self-end">
                 <IoClose />
