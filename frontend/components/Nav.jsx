@@ -61,10 +61,15 @@ const Nav = () => {
 
   return (
     <div className="w-full bg-gray-800 mb-0">
-      <div className="flex items-center justify-between px-4 py-2 h-full">
-        <Link href="/" className="text-yellow-300 font-bold text-2xl">
+      <div className="flex items-center justify-between px-4 py-4 h-full">
+        <Link
+          href="/"
+          className="text-yellow-300 font-bold text-2xl">
           <div className="flex items-center">
-            <IoTicketOutline size={30} className="mr-1" />
+            <IoTicketOutline
+              size={30}
+              className="mr-1"
+            />
             PolChain
           </div>
         </Link>
@@ -73,11 +78,8 @@ const Nav = () => {
             <Link href="/">
               <li
                 className={`${
-                  isActive("/")
-                    ? "text-white font-semibold"
-                    : "text-white hover:text-yellow-300"
-                } h-full`}
-              >
+                  isActive("/") ? "text-white font-semibold" : "text-white hover:text-yellow-300"
+                } h-full`}>
                 Home
               </li>
             </Link>
@@ -87,8 +89,7 @@ const Nav = () => {
                   isActive("/marketplace")
                     ? "text-white font-semibold"
                     : "text-white hover:text-yellow-300"
-                } h-full`}
-              >
+                } h-full`}>
                 Marketplace
               </li>
             </Link>
@@ -98,8 +99,7 @@ const Nav = () => {
                   isActive("/mytickets")
                     ? "text-white font-semibold"
                     : "text-white hover:text-yellow-300"
-                } h-full`}
-              >
+                } h-full`}>
                 My Tickets
               </li>
             </Link>
@@ -109,28 +109,26 @@ const Nav = () => {
                   isActive("/insurance")
                     ? "text-white font-semibold"
                     : "text-white hover:text-yellow-300"
-                } h-full`}
-              >
+                } h-full`}>
                 Insurance Claims
               </li>
             </Link>
             <Link href="/vr">
               <li
                 className={`${
-                  isActive("/vr")
-                    ? "text-white font-semibold"
-                    : "text-white hover:text-yellow-300"
-                } h-full`}
-              >
+                  isActive("/vr") ? "text-white font-semibold" : "text-white hover:text-yellow-300"
+                } h-full`}>
                 VR Experience (Beta)
               </li>
             </Link>
           </ul>
         </nav>
         {account ? (
-          <div className="text-white">
-            <p>Connected Account:</p>
-            <div className="text-right max-w-[120px] max-h-[50px] overflow-x-auto overflow-y-hidden whitespace-nowrap">
+          <div className="text-black bg-yellow-300 rounded-md p-2">
+            <p>
+              <b>Connected Account</b>
+            </p>
+            <div className="text-right max-h-[50px] overflow-x-auto overflow-y-hidden whitespace-nowrap ">
               <p>{account}</p>
             </div>
           </div>
@@ -141,8 +139,7 @@ const Nav = () => {
                 ? "bg-yellow-300 hover:bg-yellow-400 text-black"
                 : "text-yellow-300 bg-gray-700 cursor-default"
             } px-4 py-2 rounded font-semibold`}
-            onClick={connectWallet}
-          >
+            onClick={connectWallet}>
             Connect Wallet
           </button>
         )}
