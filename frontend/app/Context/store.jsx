@@ -8,6 +8,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // const TronWeb = require('../../tronweb')
 // const TronWeb = dynamic(()=> import('../../tronweb'), {ssr:false})
 import { ethers } from "ethers";
+import nftTicketABI from "../../data/nfticketABI.json";
+import marketplaceABI from "../../data/marketplaceABI.json";
 
 const AppContext = React.createContext()
 const queryClient = new QueryClient() 
@@ -62,25 +64,15 @@ const AppProvider = (({children}) => {
 
     // READ FUNCTIONS (NFT CONTRACT)
 
-    // const getOwnedTokenIds = async (ownerAddress, contractAddress) => {
-    //     if (!tronWeb) {
-    //         throw new Error("tronWeb is not initialized");
-    //     }
-    //     const contract = await tronWeb.contract().at(contractAddress)
-    //     const ownedTokens = await contract.getOwnedTokenIds(ownerAddress).call()
-    //     console.log("this is owned tokens: ", ownedTokens)
-    //     return ownedTokens
-    // }
-    const providerUrl = "https://rpc.ankr.com/avalanche_fuji";
-    const abi = "";
 
+    const providerUrl = "https://api.avax-test.network/ext/bc/C/rpc";
 
     const getOwnedTokenIds = async (ownerAddress, contractAddress) => {
       // Connect to the Ethereum provider
       const provider = new ethers.providers.JsonRpcProvider(providerUrl);
 
       // Create a new contract instance with the provider
-      const contract = new ethers.Contract(contractAddress, abi, provider);
+      const contract = new ethers.Contract(contractAddress, nftTicketABI, provider);
 
       // Ensure the contract has the function `getOwnedTokenIds`
       if (!contract.getOwnedTokenIds) {
@@ -116,69 +108,150 @@ const AppProvider = (({children}) => {
         return decimalLimit
     }
 
-    // function to get all the owned tokens across all event contracts
     const getAllOwnedTokens = async (userAddress) => {
-        if (!tronWeb) {
-            throw new Error("tronWeb is not initialized");
-        }
-        try {
-            console.log("getAllOwnedTokens called: ", userAddress);
-            setMyTickets([])
-            let allNewTickets = []; // Aggregate all tickets here
+      if (!window.ethereum) {
+        throw new Error("Ethereum provider is not initialized");
+      }
 
-            const marketplaceContract = await tronWeb.contract().at(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS)
+      try {
+        console.log("getAllOwnedTokens called: ", userAddress);
+        setMyTickets([]);
+        let allNewTickets = []; // Aggregate all tickets here
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const marketplaceContract = new ethers.Contract(
+          process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS,
+          marketplaceABI, // Define marketplaceAbi appropriately
+          signer
+        );
+
+        // Wait for all promises from map to resolve
+        await Promise.all(
+          eventData.map(async (event) => {
+            console.log(event.eventTitle, event.contractAddress);
+            const currentContractAddress = event.contractAddress;
+            const contract = new ethers.Contract(
+              currentContractAddress,
+              nftTicketABI, // Define eventAbi appropriately
+              signer
+            );
+            const ownedTokenIds = await contract.getOwnedTokenIds(userAddress);
+
+            console.log(event.eventTitle, "tickets found: ", ownedTokenIds);
+
+            // Temporary array for this contract
+            let tempTickets = [];
+            for (let i = 0; i < ownedTokenIds.length; i++) {
+              const currentTokenId = ethers.BigNumber.from(ownedTokenIds[i]).toNumber();
+              const isRedeemed = await contract.isTicketRedeemed(currentTokenId);
+              const isInsured = await contract.ticketInsurance(currentTokenId);
+              const catIndex = await contract.determineCategoryId(currentTokenId);
+              const catClass = ethers.BigNumber.from(catIndex).toNumber() + 1;
+              const imageURL = await contract.tokenURI(currentTokenId);
+              const isCancelled = await contract.eventCanceled();
+              const isListed = await marketplaceContract.isNFTListed(
+                currentContractAddress,
+                currentTokenId
+              );
+
+              const newTicket = {
+                contractAddress: currentContractAddress,
+                eventId: event.eventId,
+                eventTitle: event.eventTitle,
+                date: event.date,
+                time: event.time,
+                location: event.location,
+                tokenId: currentTokenId,
+                isRedeemed: isRedeemed,
+                isInsured: isInsured,
+                catClass: catClass,
+                imageURL: imageURL,
+                isCancelled: isCancelled,
+                originalTicketPrice: ethers.utils.formatUnits(event.catPricing[catIndex], "wei"),
+                isListed: isListed,
+              };
+
+              tempTickets.push(newTicket);
+            }
+
+            // Combine the tickets from this iteration into the main array
+            allNewTickets = allNewTickets.concat(tempTickets);
+          })
+        );
+
+        // Now update the state once with all new tickets
+        setMyTickets(allNewTickets);
+        return allNewTickets;
+      } catch (error) {
+        console.error("Error in getAllOwnedTokens: ", error);
+        throw error;
+      }
+    };
+
+    // function to get all the owned tokens across all event contracts
+    // const getAllOwnedTokens = async (userAddress) => {
+    //     if (!tronWeb) {
+    //         throw new Error("tronWeb is not initialized");
+    //     }
+    //     try {
+    //         console.log("getAllOwnedTokens called: ", userAddress);
+    //         setMyTickets([])
+    //         let allNewTickets = []; // Aggregate all tickets here
+
+    //         const marketplaceContract = await tronWeb.contract().at(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS)
     
-            // Wait for all promises from map to resolve
-            await Promise.all(eventData.map(async (event) => {
-                console.log(event.eventTitle, event.contractAddress);
-                const currentContractAddress = event.contractAddress;
-                const contract = await tronWeb.contract().at(currentContractAddress);
-                const ownedTokenIds = await contract.getOwnedTokenIds(userAddress).call();
-                console.log(event.eventTitle, "tickets found: ", ownedTokenIds);
+    //         // Wait for all promises from map to resolve
+    //         await Promise.all(eventData.map(async (event) => {
+    //             console.log(event.eventTitle, event.contractAddress);
+    //             const currentContractAddress = event.contractAddress;
+    //             const contract = await tronWeb.contract().at(currentContractAddress);
+    //             const ownedTokenIds = await contract.getOwnedTokenIds(userAddress).call();
+    //             console.log(event.eventTitle, "tickets found: ", ownedTokenIds);
     
-                // Temporary array for this contract
-                let tempTickets = [];
-                for (let i = 0; i < ownedTokenIds.length; i++) {
-                    const currentTokenId = tronWeb.toDecimal(ownedTokenIds[i]._hex);
-                    const isRedeemed = await contract.isTicketRedeemed(currentTokenId).call();
-                    const isInsured = await contract.ticketInsurance(currentTokenId).call();
-                    const catIndex = await contract.determineCategoryId(currentTokenId).call();
-                    const catClass = tronWeb.toDecimal(catIndex) + 1;
-                    const imageURL = await contract.tokenURI(currentTokenId).call();
-                    const isCancelled = await contract.eventCanceled().call();
-                    const isListed = await marketplaceContract.isNFTListed(currentContractAddress, currentTokenId).call()
+    //             // Temporary array for this contract
+    //             let tempTickets = [];
+    //             for (let i = 0; i < ownedTokenIds.length; i++) {
+    //                 const currentTokenId = tronWeb.toDecimal(ownedTokenIds[i]._hex);
+    //                 const isRedeemed = await contract.isTicketRedeemed(currentTokenId).call();
+    //                 const isInsured = await contract.ticketInsurance(currentTokenId).call();
+    //                 const catIndex = await contract.determineCategoryId(currentTokenId).call();
+    //                 const catClass = tronWeb.toDecimal(catIndex) + 1;
+    //                 const imageURL = await contract.tokenURI(currentTokenId).call();
+    //                 const isCancelled = await contract.eventCanceled().call();
+    //                 const isListed = await marketplaceContract.isNFTListed(currentContractAddress, currentTokenId).call()
     
-                    const newTicket = {
-                        "contractAddress": currentContractAddress, 
-                        "eventId": event.eventId,
-                        "eventTitle": event.eventTitle,
-                        "date": event.date,
-                        "time": event.time, 
-                        "location": event.location, 
-                        "tokenId": currentTokenId,
-                        "isRedeemed": isRedeemed,
-                        "isInsured": isInsured,
-                        "catClass": catClass,
-                        "imageURL": imageURL,
-                        "isCancelled": isCancelled,
-                        "originalTicketPrice": tronWeb.toSun(event.catPricing[catIndex]),
-                        "isListed": isListed
-                    };
+    //                 const newTicket = {
+    //                     "contractAddress": currentContractAddress, 
+    //                     "eventId": event.eventId,
+    //                     "eventTitle": event.eventTitle,
+    //                     "date": event.date,
+    //                     "time": event.time, 
+    //                     "location": event.location, 
+    //                     "tokenId": currentTokenId,
+    //                     "isRedeemed": isRedeemed,
+    //                     "isInsured": isInsured,
+    //                     "catClass": catClass,
+    //                     "imageURL": imageURL,
+    //                     "isCancelled": isCancelled,
+    //                     "originalTicketPrice": tronWeb.toSun(event.catPricing[catIndex]),
+    //                     "isListed": isListed
+    //                 };
     
-                    tempTickets.push(newTicket);
-                }
+    //                 tempTickets.push(newTicket);
+    //             }
     
-                // Combine the tickets from this iteration into the main array
-                allNewTickets = allNewTickets.concat(tempTickets);
-            }));
-            // Now update the state once with all new tickets
-            setMyTickets(allNewTickets);
-            return allNewTickets
-        } catch (error) {
-            console.error("Error in getAllOwnedTokens: ", error);
-            throw error;
-        }
-    }
+    //             // Combine the tickets from this iteration into the main array
+    //             allNewTickets = allNewTickets.concat(tempTickets);
+    //         }));
+    //         // Now update the state once with all new tickets
+    //         setMyTickets(allNewTickets);
+    //         return allNewTickets
+    //     } catch (error) {
+    //         console.error("Error in getAllOwnedTokens: ", error);
+    //         throw error;
+    //     }
+    // }
 
     const isTicketRedeemed = async (contractAddress, tokenId) => {
         const contract = await tronWeb.contract().at(contractAddress)
