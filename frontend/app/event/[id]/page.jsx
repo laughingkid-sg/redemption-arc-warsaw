@@ -275,7 +275,7 @@ const EventPurchase = ({ params }) => {
                 </div>
               </div>
               <div className="w-3/4 flex justify-center flex-col mt-3 gap-y-2">
-                <h1 className="font-bold">Pay using</h1>
+                <h1 className="font-semibold">Pay using</h1>
                 <div
                   className={`border-2 group w-[200px] pxl-2 py-2 rounded font-semibold flex items-center justify-start`}
                 >
@@ -328,7 +328,7 @@ const EventPurchase = ({ params }) => {
                   onClick={handlePurchase}
                   className={`${
                     paymentMethod === null ? "bg-gray-400 text-gray-200" : "bg-yellow-400"
-                  }  w-[200px] p-2 rounded-lg`}
+                  }  w-[200px] p-2 rounded-3xl mt-2`}
                 >
                   Continue
                 </button>

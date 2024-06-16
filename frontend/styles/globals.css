@@ -174,3 +174,31 @@ label {
 .modal-content a:hover {
   background-color: #e0e0e0; /* Hover effect for link */
 }
+
+.sliderContainer {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slider {
+  display: flex;
+  white-space: nowrap;
+}
+
+.slider p {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+  font-weight: 500;
+  padding-right: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.divider {
+  border-left: 1px solid white;
+  height: 100%;
+  margin: 0 20px;
+}
