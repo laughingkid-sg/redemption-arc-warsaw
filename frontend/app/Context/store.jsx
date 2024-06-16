@@ -596,17 +596,22 @@ const AppProvider = (({children}) => {
         if (!window.ethereum) {
             throw new Error("Ethereum provider is not initialized");
         }
+        console.log(listedPrice)
+        console.log(ethers.utils.parseUnits(listedPrice, 18))
         try {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
 
             const contract = new ethers.Contract(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS, marketplaceABI, signer);
-            const gasLimit = await contract.estimateGas.buyNFT(listingId);
+            const gasLimit = await contract.estimateGas.buyNFT(listingId, {
+                value: ethers.utils.parseEther(listedPrice).toString(), 
+                // gasPrice: ethers.utils.parseUnits('20', 'gwei'), // optionally specify the gas price
+            });
 
             const tx = await contract.buyNFT(listingId, {
                 gasLimit: gasLimit,
-                value: ethers.utils.parseEther(listedPrice), 
+                value: ethers.utils.parseEther(listedPrice).toString(), 
                 // gasPrice: ethers.utils.parseUnits('20', 'gwei'), // optionally specify the gas price
             });
 
