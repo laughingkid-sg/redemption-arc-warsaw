@@ -35,6 +35,7 @@ const AppProvider = (({children}) => {
         if (typeof window !== "undefined" && window.ethereum) {
         const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
         setTronWeb(ethersProvider);
+        console.log("ethersProvider: ", ethersProvider);
 
         const getAccount = async () => {
             await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -293,21 +294,51 @@ const AppProvider = (({children}) => {
         }
     }
 
-    const loadEventPageData = async (contractAddress) => {
-        if (!tronWeb) {
-            throw new Error("tronWeb is not initialized");
-        }
-        // get the mint limit
-        const contract = await tronWeb.contract().at(contractAddress)
-        const mintLimit = await contract.mintLimitPerAddress().call()
-        const decimalLimit = tronWeb.toDecimal(mintLimit._hex)
-        // get the event cancelled
-        const isCancelled = await contract.eventCanceled().call()
-        // get sale start time
-        const saleTime = await contract.saleStartTime().call()
-
-        return {mintLimit: decimalLimit, isCancelled, startTime: saleTime}
+    const loadEventPageData = async (contractAddress, abi) => {
+    if (typeof window.ethereum === 'undefined') {
+        throw new Error("MetaMask is not installed");
     }
+
+      try {
+        
+        const contract = new ethers.Contract(
+          "0xbc1f9A4a1C946a1cF5FB2A7922327469B3E9D3f0",
+          nftTicketABI, // Define eventAbi appropriately
+          signer
+        );
+        console.log("contract: ", contract);
+        // Get the mint limit
+        const mintLimit = await contract.mintLimitPerAddress();
+        const decimalLimit = mintLimit.toNumber(); // Assuming mintLimit is a BigNumber
+
+        // Get the event canceled status
+        const isCancelled = await contract.eventCanceled();
+
+        // Get the sale start time
+        const saleTime = await contract.saleStartTime();
+
+        return { mintLimit: decimalLimit, isCancelled, startTime: saleTime };
+      } catch (error) {
+        console.error("Error loading event page data: ", error);
+        return { success: false, error };
+      }
+    };
+
+    // const loadEventPageData = async (contractAddress) => {
+    //     if (!tronWeb) {
+    //         throw new Error("tronWeb is not initialized");
+    //     }
+    //     // get the mint limit
+    //     const contract = await tronWeb.contract().at(contractAddress)
+    //     const mintLimit = await contract.mintLimitPerAddress().call()
+    //     const decimalLimit = tronWeb.toDecimal(mintLimit._hex)
+    //     // get the event cancelled
+    //     const isCancelled = await contract.eventCanceled().call()
+    //     // get sale start time
+    //     const saleTime = await contract.saleStartTime().call()
+
+    //     return {mintLimit: decimalLimit, isCancelled, startTime: saleTime}
+    // }
 
     // READ FUNCTIONS (MARKETPLACE CONTRACT)
 
@@ -398,74 +429,6 @@ const AppProvider = (({children}) => {
         throw error;
       }
     };
-
-
-    // const getAllActiveListings = async () => {
-    //     if (!tronWeb) {
-    //         throw new Error("tronWeb is not initialized");
-    //     }
-    //     console.log("getAllActiveListings called!");
-    //     try {
-    //         const contractAddress = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS;
-    //         const contract = await tronWeb.contract().at(contractAddress);
-    //         const allActiveListingsTmp = await contract.getAllActiveListings().call();
-
-    
-    //         const [ids, sellers, contracts, tokenIds, listingPrices, actives] = allActiveListingsTmp;
-    
-    //         const allActiveListings = ids.map((id, index) => ({
-    //             listingId: tronWeb.toDecimal(id._hex),
-    //             sellerAddress: tronWeb.address.fromHex(sellers[index]),
-    //             nftContractAddress: tronWeb.address.fromHex(contracts[index]),
-    //             tokenId: tronWeb.toDecimal(tokenIds[index]),
-    //             listingPrice: tronWeb.toDecimal(listingPrices[index]),
-    //             isActive: actives[index],
-    //         }));
-    
-    //         // Sort listings by nftContractAddress
-    //         allActiveListings.sort((a, b) => a.nftContractAddress.localeCompare(b.nftContractAddress));
-            
-    //         let currentContractInstance = null;
-    //         let currentContractAddress = "";
-    //         let event = null
-    //         let listingsList = []
-    
-    //         for (const listing of allActiveListings) {
-    //             if (listing.nftContractAddress !== currentContractAddress) {
-    //                 currentContractInstance = await tronWeb.contract().at(listing.nftContractAddress);
-    //                 currentContractAddress = listing.nftContractAddress;
-
-    //                 event = eventData.find(event => event.contractAddress === currentContractAddress)
-    //             }
-    //             const newListingInfo = {
-    //                 "listingId": listing.listingId,
-    //                 "sellerAddress": listing.sellerAddress,
-    //                 "nftContractAddress": currentContractAddress,
-    //                 "tokenId": listing.tokenId,
-    //                 "listingPrice": tronWeb.fromSun(listing.listingPrice),
-    //                 "isActive": listing.isActive,
-
-    //                 "eventTitle": event.eventTitle,
-    //                 "date": event.date,
-    //                 "time": event.time,
-    //                 "location": event.location, 
-    //                 "eventDescription": event.description,
-
-    //                 "isRedeemed": await currentContractInstance.isTicketRedeemed(listing.tokenId).call(),
-    //                 "isInsured": await currentContractInstance.ticketInsurance(listing.tokenId).call(),
-    //                 "catClass": parseInt(await currentContractInstance.determineCategoryId(listing.tokenId).call()) + 1,
-    //                 "tokenImgURL": await currentContractInstance.tokenURI(listing.tokenId).call(),
-    //                 "isCancelled": await currentContractInstance.eventCanceled().call()
-    //             }
-    //             listingsList.push(newListingInfo)
-    //         }
-            
-    //         setMarketplaceListings(listingsList)
-    //     } catch (error) {
-    //         console.error('Error fetching listings:', error);
-    //         throw error;
-    //     }
-    // }
 
     const isTicketListed = async (nftContractAddress, tokenId) => {
         const contract = await tronWeb.contract().at(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS)
