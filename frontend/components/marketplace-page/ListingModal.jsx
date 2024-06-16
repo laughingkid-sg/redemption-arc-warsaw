@@ -48,7 +48,7 @@ const ListingModal = ({ isOpen, listing, onClose }) => {
         onClose={() => setIsConfirmationModalOpen(false)}
         url={transactionUrl}
       />
-      <div className="bg-white p-5 rounded-lg w-3/4 h-3/4 overflow-y-auto"  onClick={handleModalClick}>
+      <div className="bg-white text-black p-5 rounded-lg w-3/4 h-3/4 overflow-y-auto"  onClick={handleModalClick}>
         <div className='flex flex-row justify-between items-start w-full h-auto'>
             <div className='flex flex-col justify-center items-center w-1/2 py-4 px-6 my-6 border-r border-gray-500'>
                 <img src={listing.tokenImgURL} alt="Token" className='w-72 h-72'/>
