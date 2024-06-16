@@ -6,7 +6,7 @@ const ConfirmationModal = ({ isOpen, onClose, url }) => {
 
   return (
     <div className="modal-backdrop">
-        <div className="modal-content">
+        <div className="modal-content text-black">
             <button className="close-button" onClick={onClose}>
                 <IoClose />
             </button>
